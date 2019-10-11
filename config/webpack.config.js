@@ -145,8 +145,8 @@ function build(webpackEnv = 'development', extConfig) {
       new HtmlWebpackPlugin({
         filename: 'index.html',
         template: 'index.html',
-        inject: true,
-        title: '',
+        favicon: path.join(__dirname, '../../../', 'favicon.ico'),
+        inject: true
       }),
       new webpack.DefinePlugin({
         'process.env': { NODE_ENV: "'" + NODE_ENV + "'" },

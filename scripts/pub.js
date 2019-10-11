@@ -1,7 +1,13 @@
 'use strict';
 
+const paths = require('../config/paths');
+const webpackOutConfig = require(paths.appSrc+'/webpack.out.config')
+
+
 // Do this as the first thing so that any code reading it knows the right env.
 process.env.NODE_ENV = 'production';
+
+process.env.BASE_URL = webpackOutConfig.url.pub.baseUrl
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -13,7 +19,6 @@ process.on('unhandledRejection', err => {
 const chalk = require('chalk');
 const { build } = require('./base');
 const FileSizeReporter = require('../config/fileSizeReporter');
-const paths = require('../config/paths');
 const {
   WARN_AFTER_BUNDLE_GZIP_SIZE,
   WARN_AFTER_CHUNK_GZIP_SIZE,
