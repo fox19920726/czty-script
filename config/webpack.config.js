@@ -16,7 +16,7 @@ const {
 const { isSameObject } = require('./utils');
 
 function resolve(dir) {
-  return path.join(__dirname, '..', dir)
+  return path.join(__dirname, '../../../', dir)
 }
 
 function getSplitChunkConfig(useAntd) {
@@ -145,7 +145,7 @@ function build(webpackEnv = 'development', extConfig) {
       new HtmlWebpackPlugin({
         filename: 'index.html',
         template: 'index.html',
-        favicon: path.join(__dirname, '../../../', 'favicon.ico'),
+        favicon: resolve('favicon.ico'),
         inject: true
       }),
       new webpack.DefinePlugin({
