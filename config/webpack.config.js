@@ -65,7 +65,7 @@ function build(webpackEnv = 'development', extConfig) {
   const title = extConfig.title;
 
   const config = {
-    entry: ['./src/index.js'],
+    entry: ['@babel/polyfill','./src/index.js'],
     devtool: isProduction ? false : 'cheap-source-map',
     mode: isProduction ? 'production' : 'development',
     output: {
