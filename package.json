@@ -1,15 +1,19 @@
 {
   "name": "czty-script",
-  "version": "0.3.6",
+  "version": "0.3.8",
   "author": "Jin",
   "license": "MIT",
   "bin": {
     "czty-build": "bin/czty-build.js"
   },
+  "publishConfig": {
+    "registry": "http://192.168.150.186:11111/repository/npm-internal/"
+  },
   "dependencies": {
     "@babel/core": "^7.6.2",
     "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.6.2",
+    "@babel/runtime-corejs3": "^7.6.3",
     "address": "^1.1.0",
     "babel-loader": "^8.0.5",
     "chalk": "^1.1.3",
