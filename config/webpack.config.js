@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const paths = require('./paths');
+const sassGlobal = require(paths.appSrc+'/webpack.out.config').sassGlobal
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // css 代码打包成文件注入html
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // 打包体积
@@ -18,6 +19,9 @@ const { isSameObject } = require('./utils');
 function resolve(dir) {
   return path.join(__dirname, '../../../', dir)
 }
+const sassGlobalSrc = sassGlobal.map((currentValue) => {
+  return resolve('src/styles/' + currentValue)
+})
 
 function getSplitChunkConfig(useAntd) {
   return useAntd
@@ -127,7 +131,13 @@ function build(webpackEnv = 'development', extConfig) {
             },
             'css-loader',
             'sass-loader',
-            'postcss-loader'
+            'postcss-loader',
+            {
+              loader: 'sass-resources-loader',
+              options: {
+                resources: sassGlobalSrc
+              },
+            },
           ],
         }
       ],
