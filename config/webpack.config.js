@@ -8,6 +8,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin'); // css 代码压缩
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const {
   WARN_AFTER_BUNDLE_GZIP_SIZE,
@@ -175,6 +176,12 @@ function build(webpackEnv = 'development', extConfig) {
       // You can remove this if you don't use Moment.js:
       new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-cn/),
       new VueLoaderPlugin(),
+      new CopyWebpackPlugin([
+        {
+          from: resolve('src/serverConfig.js'),
+          to: './'
+        }
+      ])
     ],
   };
   if (isServer) {
