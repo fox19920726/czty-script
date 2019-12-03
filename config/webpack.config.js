@@ -128,7 +128,10 @@ function build(webpackEnv = 'development', extConfig) {
           test: /\.(css|scss)$/,
           use: [
             {
-              loader:MiniCssExtractPlugin.loader
+              loader:MiniCssExtractPlugin.loader,
+              options:{
+                publicPath:'../'
+              }
             },
             'css-loader',
             'sass-loader',
