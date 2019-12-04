@@ -25,39 +25,14 @@ const sassGlobalSrc = sassGlobal.map((currentValue) => {
 })
 
 function getSplitChunkConfig(useAntd) {
-  return useAntd
-    ? {
-        antd: {
-          test: /[\\/]node_modules[\\/](antd|@ant-design)[\\/]/,
-          name: 'antd',
-          minChunks: 1,
-          chunks: 'all',
-          priority: -10,
-        },
-        vendors: {
-          //cacheGroups重写继承配置，设为false不继承
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          minChunks: 1,
-          priority: -20,
-        },
-        index: {
-          minChunks: 1,
-          priority: -30,
-          name: 'index',
-          reuseExistingChunk: true,
-        },
-        default: false,
-      }
-    : {
-        vendors: {
-          //cacheGroups重写继承配置，设为false不继承
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          minChunks: 1,
-          priority: -20,
-        },
-      };
+  return {
+    vendors: {
+      test: /[\\/]node_modules[\\/]/,
+      name: 'vendors',
+      minChunks: 1,
+      priority: -20,
+    }
+  }
 }
 
 function build(webpackEnv = 'development', extConfig) {
@@ -122,27 +97,6 @@ function build(webpackEnv = 'development', extConfig) {
             limit: 10000, // 配置了10以下上限，那么当超过这个上线时，loader实际上时使用的file-loader；
             name: path.posix.join('images/[name].[hash:7].[ext]')
           },
-        },
-        {
-          // 对于纯css文件，由于面向的是第三方库，无需开启module
-          test: /\.(css|scss)$/,
-          use: [
-            {
-              loader:MiniCssExtractPlugin.loader,
-              options:{
-                publicPath:'../'
-              }
-            },
-            'css-loader',
-            'sass-loader',
-            'postcss-loader',
-            {
-              loader: 'sass-resources-loader',
-              options: {
-                resources: sassGlobalSrc
-              },
-            },
-          ],
         }
       ],
     },
@@ -165,11 +119,6 @@ function build(webpackEnv = 'development', extConfig) {
       new webpack.DefinePlugin({
         'process.env': { NODE_ENV: "'" + NODE_ENV + "'" },
       }),
-      new MiniCssExtractPlugin({
-        filename: 'css/[name].[contenthash:8].css',
-        chunkFilename: 'css/[id].[contenthash:8].css',
-        ignoreOrder: false
-      }),
       new OptimizeCSSAssetsPlugin(),
       // Moment.js is an extremely popular library that bundles large locale files
       // by default due to how Webpack interprets its code. This is a practical
@@ -188,31 +137,93 @@ function build(webpackEnv = 'development', extConfig) {
     ],
   };
   if (isServer) {
+    config.module.rules.push(
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: '[local]',
+            },
+          },
+          'sass-loader',
+          'postcss-loader',
+          {
+            loader: 'sass-resources-loader',
+            options: {
+              resources: sassGlobalSrc
+            },
+          },
+        ],
+      }
+    )
     // 当开启了hot：true，会自动添加hotReplaceModule
     config.plugins.push(new webpack.NamedModulesPlugin());
   } else {
-    config.plugins.push(new UglifyJsPlugin({
-      uglifyOptions: {
-        warnings: false,
-        mangle: true,
-        toplevel: false,
-        ie8: false,
-        keep_fnames: false,
-        compress: {
-          drop_debugger: true,
-          drop_console: true
-        }
+    config.module.rules.push(
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader:MiniCssExtractPlugin.loader,
+            options:{
+              publicPath:'../'
+            }
+          },
+          'css-loader',
+          'sass-loader',
+          'postcss-loader',
+          {
+            loader: 'sass-resources-loader',
+            options: {
+              resources: sassGlobalSrc
+            },
+          },
+        ],
       }
-    }));
+    )
+    config.plugins.push(
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          warnings: false,
+          mangle: true,
+          toplevel: false,
+          ie8: false,
+          keep_fnames: false,
+          compress: {
+            drop_debugger: true,
+            drop_console: true
+          }
+        }
+      })
+    )
+    config.plugins.push(
+      new MiniCssExtractPlugin({
+        filename: 'css/[name].[contenthash:8].css',
+        chunkFilename: 'css/[id].[contenthash:8].css',
+        ignoreOrder: false
+      })
+    )
     openAnalyse && config.plugins.push(new BundleAnalyzerPlugin());
   }
   if (isProduction) {
     config.performance = {
       maxAssetSize: WARN_AFTER_CHUNK_GZIP_SIZE,
       maxEntrypointSize: WARN_AFTER_BUNDLE_GZIP_SIZE,
-    };
+    }
   }
-  return config;
+  return config
 }
 
 const initConfig = {

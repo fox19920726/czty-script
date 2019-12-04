@@ -1,6 +1,6 @@
 {
   "name": "czty-script",
-  "version": "0.5.1",
+  "version": "0.5.4",
   "author": "Jin",
   "license": "MIT",
   "bin": {
@@ -39,7 +39,7 @@
     "sass-loader": "^8.0.0",
     "sass-resources-loader": "^2.0.1",
     "strip-ansi": "^5.2.0",
-    "style-loader": "^0.20.1",
+    "style-loader": "^0.20.3",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "url-loader": "^0.6.2",
     "vue-loader": "^15.7.1",
