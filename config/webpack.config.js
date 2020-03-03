@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const paths = require('./paths');
 const sassGlobal = require(paths.appSrc+'/webpack.out.config').sassGlobal
+const hasTopo = require(paths.appSrc+'/webpack.out.config').hasTopo
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // css 代码打包成文件注入html
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // 打包体积
@@ -215,6 +216,16 @@ function build(webpackEnv = 'development', extConfig) {
         ignoreOrder: false
       })
     )
+    if(hasTopo){
+      config.plugins.push(
+        new CopyWebpackPlugin([
+          {
+            from: resolve('web-topology'),
+            to: './web-topology'
+          }
+        ])
+      )
+    }
     openAnalyse && config.plugins.push(new BundleAnalyzerPlugin());
   }
   if (isProduction) {
