@@ -92,7 +92,7 @@ function build(webpackEnv = 'development', extConfig) {
           }
         },
         {
-          test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+          test: /\.(png|jpe?g|gif|svg|mp4)(\?.*)?$/,
           loader: 'url-loader',
           options: {
             limit: 10000, // 配置了10以下上限，那么当超过这个上线时，loader实际上时使用的file-loader；
