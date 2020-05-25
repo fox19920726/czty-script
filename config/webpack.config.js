@@ -2,7 +2,8 @@ const path = require('path');
 const webpack = require('webpack');
 const paths = require('./paths');
 const sassGlobal = require(paths.appSrc+'/webpack.out.config').sassGlobal
-const hasTopo = require(paths.appSrc+'/webpack.out.config').hasTopo
+const externals = require(paths.appSrc+'/webpack.out.config').externals || {}
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // css 代码打包成文件注入html
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // 打包体积
@@ -25,7 +26,7 @@ const sassGlobalSrc = sassGlobal.map((currentValue) => {
   return resolve('src/styles/' + currentValue)
 })
 
-function getSplitChunkConfig(useAntd) {
+function getSplitChunkConfig() {
   return {
     vendors: {
       test: /[\\/]node_modules[\\/]/,
@@ -46,7 +47,10 @@ function build(webpackEnv = 'development', extConfig) {
   const title = extConfig.title;
 
   const config = {
-    entry: './src/index.js',
+    entry: {
+      index:'./src/index.js'
+    },
+    externals: externals,
     devtool: isProduction ? false : 'cheap-source-map',
     mode: isProduction ? 'production' : 'development',
     output: {
@@ -88,15 +92,15 @@ function build(webpackEnv = 'development', extConfig) {
           loader: 'url-loader',
           options: {
             limit: 30000,
-            name: path.posix.join('font/[name].[hash:7].[ext]')
+            name: path.posix.join(isServer ? 'font/[name].[ext]' :'font/[name].[hash:7].[ext]')
           }
         },
         {
-          test: /\.(png|jpe?g|gif|svg|mp4)(\?.*)?$/,
+          test: /\.(png|jpe?g|gif|svg|mp4|pdf)(\?.*)?$/,
           loader: 'url-loader',
           options: {
             limit: 10000, // 配置了10以下上限，那么当超过这个上线时，loader实际上时使用的file-loader；
-            name: path.posix.join('images/[name].[hash:7].[ext]')
+            name: path.posix.join(isServer ? 'images/[name].[ext]' : 'images/[name].[hash:7].[ext]')
           },
         }
       ],
@@ -105,9 +109,9 @@ function build(webpackEnv = 'development', extConfig) {
     optimization: {
       splitChunks: {
         minSize: 30000,
-        chunks: 'all', // all, async, and initial, all means include all types of chunks
+        chunks: 'async', // all, async, and initial, all means include all types of chunks
         name: false,
-        cacheGroups: getSplitChunkConfig(!isServer && extConfig.useAntd),
+        cacheGroups: getSplitChunkConfig(),
       }
     },
     plugins: [
@@ -115,7 +119,8 @@ function build(webpackEnv = 'development', extConfig) {
         filename: 'index.html',
         template: 'index.html',
         favicon: resolve('favicon.ico'),
-        inject: true
+        inject: true,
+        chunks:['index']
       }),
       new webpack.DefinePlugin({
         'process.env': { NODE_ENV: "'" + NODE_ENV + "'" },
@@ -216,16 +221,6 @@ function build(webpackEnv = 'development', extConfig) {
         ignoreOrder: false
       })
     )
-    if(hasTopo){
-      config.plugins.push(
-        new CopyWebpackPlugin([
-          {
-            from: resolve('web-topology'),
-            to: './web-topology'
-          }
-        ])
-      )
-    }
     openAnalyse && config.plugins.push(new BundleAnalyzerPlugin());
   }
   if (isProduction) {
