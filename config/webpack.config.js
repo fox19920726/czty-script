@@ -9,7 +9,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // css 代码�
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // 打包体积
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin'); // css 代码压缩
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const {
@@ -200,21 +200,6 @@ function build(webpackEnv = 'development', extConfig) {
       }
     )
     config.plugins.push(
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          warnings: false,
-          mangle: true,
-          toplevel: false,
-          ie8: false,
-          keep_fnames: false,
-          compress: {
-            drop_debugger: true,
-            drop_console: true
-          }
-        }
-      })
-    )
-    config.plugins.push(
       new MiniCssExtractPlugin({
         filename: 'css/[name].[contenthash:8].css',
         chunkFilename: 'css/[id].[contenthash:8].css',
@@ -222,6 +207,28 @@ function build(webpackEnv = 'development', extConfig) {
       })
     )
     openAnalyse && config.plugins.push(new BundleAnalyzerPlugin());
+    config.optimization = { ...config.optimization, ...{
+      minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            ecma: undefined,
+            warnings: false,
+            parse: {},
+            compress: {},
+            mangle: true, // Note `mangle.properties` is `false` by default.
+            module: false,
+            output: null,
+            toplevel: false,
+            nameCache: null,
+            ie8: true,
+            keep_classnames: undefined,
+            keep_fnames: false,
+            safari10: true,
+          }
+        })
+      ],
+    }}
   }
   if (isProduction) {
     config.performance = {
