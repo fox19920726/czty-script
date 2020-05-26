@@ -11,3 +11,9 @@ date@2020-05-26
 name@金角大王
 change:
 1、把uglifyjs-webpack-plugin插件换成terser-webpack-plugin插件
+
+#0.6.0
+date@2020-05-26
+name@金角大王
+change:
+1、固定vue-template-compiler版本号
