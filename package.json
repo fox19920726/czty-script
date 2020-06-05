@@ -1,6 +1,6 @@
 {
   "name": "czty-script",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "author": "Jin",
   "license": "MIT",
   "bin": {
@@ -42,7 +42,7 @@
     "style-loader": "^0.20.3",
     "url-loader": "^0.6.2",
     "vue-loader": "^15.7.1",
-    "vue-template-compiler": "2.6.10",
+    "vue-template-compiler": "^2.6.11",
     "webpack": "^4.23.1",
     "webpack-bundle-analyzer": "^3.4.1",
     "webpack-cli": "^3.1.2",

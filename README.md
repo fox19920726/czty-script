@@ -17,3 +17,10 @@ date@2020-05-26
 name@金角大王
 change:
 1、固定vue-template-compiler版本号
+
+
+#0.6.1
+date@2020-06-05
+name@金角大王
+change:
+1、可变vue-template-compiler版本号，因为还是需要升级
