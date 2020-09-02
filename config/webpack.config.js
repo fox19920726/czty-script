@@ -3,6 +3,8 @@ const webpack = require('webpack');
 const paths = require('./paths');
 const sassGlobal = require(paths.appSrc+'/webpack.out.config').sassGlobal
 const externals = require(paths.appSrc+'/webpack.out.config').externals || {}
+const shouldCopyFile = require(paths.appSrc+'/webpack.out.config').shouldCopyFile || []
+const type = require(paths.appSrc+'/webpack.out.config').type || 'Vue'
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // css 代码打包成文件注入html
@@ -37,6 +39,17 @@ function getSplitChunkConfig() {
   }
 }
 
+function generateCopyFile() {
+  const fileArr = []
+  shouldCopyFile.map((item) => {
+    fileArr.push({
+      from: resolve(item),
+      to: './'
+    })
+  })
+  return fileArr
+}
+
 function build(webpackEnv = 'development', extConfig) {
   const NODE_ENV = process.env.NODE_ENV;
   const isServer = NODE_ENV === 'local';
@@ -45,6 +58,68 @@ function build(webpackEnv = 'development', extConfig) {
   const serverPath = extConfig.publicPath || './';
   const useEslint = extConfig.useEslint || false;
   const title = extConfig.title;
+  const rules = [{
+    test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+      loader: 'url-loader',
+      options: {
+        limit: 30000,
+        name: path.posix.join(isServer ? 'font/[name].[ext]' :'font/[name].[hash:7].[ext]')
+      }
+    }, {
+      test: /\.(png|jpe?g|gif|svg|mp4|pdf)(\?.*)?$/,
+      loader: 'url-loader',
+      options: {
+        limit: 10000, // 配置了10以下上限，那么当超过这个上线时，loader实际上时使用的file-loader；
+        name: path.posix.join(isServer ? 'images/[name].[ext]' : 'images/[name].[hash:7].[ext]')
+      },
+    }
+  ]
+  const plugins = [
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: 'index.html',
+      favicon: resolve('favicon.ico'),
+      inject: true,
+      chunks:['index']
+    }),
+    new webpack.DefinePlugin({
+      'process.env': { NODE_ENV: "'" + NODE_ENV + "'" },
+    }),
+    new OptimizeCSSAssetsPlugin(),
+    new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-cn/),
+    new CopyWebpackPlugin(generateCopyFile())
+  ]
+
+  if (type === 'Vue') {
+    rules.push({
+      test: /\.(vue|js)?$/,
+      loader: 'eslint-loader',
+      enforce: 'pre',
+      include: paths.appSrc,
+      options: {
+        formatter: require('eslint-friendly-formatter'), // 指定错误报告的格式规范
+        quiet: true, // 只上报error，不上报warning
+      },
+    },
+    {
+      test: /\.vue$/,
+      loader: 'vue-loader',
+    },
+    {
+      test: /\.js$/,
+      loader: 'babel-loader',
+      exclude:/node_modules/
+    })
+    plugins.push(new VueLoaderPlugin())
+  }
+
+  if (type === 'React') {
+    rules.push({
+      test: /\.(jsx|js)?$/,
+      include: paths.appSrc,
+      loader: 'babel-loader'
+    })
+  }
 
   const config = {
     entry: {
@@ -61,49 +136,13 @@ function build(webpackEnv = 'development', extConfig) {
       publicPath: isProduction ? serverPath : './',
     },
     resolve: {
-      extensions: ['.js', '.vue', '.json'],
+      extensions: ['.js', '.vue', '.json', '.jsx'],
       alias: {
         '@': resolve('src')
       }
     },
     module: {
-      rules: [
-        {
-          test: /\.(vue|js)?$/,
-          loader: 'eslint-loader',
-          enforce: 'pre',
-          include: paths.appSrc,
-          options: {
-            formatter: require('eslint-friendly-formatter'), // 指定错误报告的格式规范
-            quiet: true, // 只上报error，不上报warning
-          },
-        },
-        {
-          test: /\.vue$/,
-          loader: 'vue-loader',
-        },
-        {
-          test: /\.js$/,
-          loader: 'babel-loader',
-          exclude:/node_modules/
-        },
-        {
-        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-          loader: 'url-loader',
-          options: {
-            limit: 30000,
-            name: path.posix.join(isServer ? 'font/[name].[ext]' :'font/[name].[hash:7].[ext]')
-          }
-        },
-        {
-          test: /\.(png|jpe?g|gif|svg|mp4|pdf)(\?.*)?$/,
-          loader: 'url-loader',
-          options: {
-            limit: 10000, // 配置了10以下上限，那么当超过这个上线时，loader实际上时使用的file-loader；
-            name: path.posix.join(isServer ? 'images/[name].[ext]' : 'images/[name].[hash:7].[ext]')
-          },
-        }
-      ],
+      rules: rules
     },
     // 公共js单独打包
     optimization: {
@@ -114,33 +153,7 @@ function build(webpackEnv = 'development', extConfig) {
         cacheGroups: getSplitChunkConfig(),
       }
     },
-    plugins: [
-      new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: 'index.html',
-        favicon: resolve('favicon.ico'),
-        inject: true,
-        chunks:['index']
-      }),
-      new webpack.DefinePlugin({
-        'process.env': { NODE_ENV: "'" + NODE_ENV + "'" },
-      }),
-      new OptimizeCSSAssetsPlugin(),
-      // Moment.js is an extremely popular library that bundles large locale files
-      // by default due to how Webpack interprets its code. This is a practical
-      // solution that requires the user to opt into importing specific locales.
-      // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-      // I just leave zh-ch to my package
-      // You can remove this if you don't use Moment.js:
-      new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-cn/),
-      new VueLoaderPlugin(),
-      new CopyWebpackPlugin([
-        {
-          from: resolve('src/serverConfig.js'),
-          to: './'
-        }
-      ])
-    ],
+    plugins: plugins,
   };
   if (isServer) {
     config.module.rules.push(

@@ -24,3 +24,11 @@ date@2020-06-05
 name@金角大王
 change:
 1、可变vue-template-compiler版本号，因为还是需要升级
+
+
+#0.6.2
+date@2020-09-02
+name@金角大王
+change:
+1、兼容了react为技术栈的项目
+2、原先的vue项目可以不升级版本

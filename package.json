@@ -1,6 +1,6 @@
 {
   "name": "czty-script",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "author": "Jin",
   "license": "MIT",
   "bin": {
@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@babel/core": "^7.6.2",
-    "@babel/preset-env": "^7.6.2",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
     "address": "^1.1.0",
     "babel-loader": "^8.0.5",
     "chalk": "^1.1.3",
