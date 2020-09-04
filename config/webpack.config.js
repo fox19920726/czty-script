@@ -13,6 +13,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin'); /
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const TerserPlugin = require('terser-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const eslintFormatter = require('react-dev-utils/eslintFormatter');
 
 const {
   WARN_AFTER_BUNDLE_GZIP_SIZE,
@@ -115,9 +116,20 @@ function build(webpackEnv = 'development', extConfig) {
 
   if (type === 'React') {
     rules.push({
-      test: /\.(jsx|js)?$/,
+      test: /\.(js|jsx)?$/,
       include: paths.appSrc,
-      loader: 'babel-loader'
+      enforce: 'pre',
+      use: [{
+        loader: 'eslint-loader',
+        options: {
+          formatter: eslintFormatter
+        },
+      }],
+    },
+    {
+      test: /\.(js|jsx)?$/,
+      include: paths.appSrc,
+      loader: 'babel-loader',
     })
   }
 

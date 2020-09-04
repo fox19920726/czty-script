@@ -32,3 +32,10 @@ name@金角大王
 change:
 1、兼容了react为技术栈的项目
 2、原先的vue项目可以不升级版本
+
+
+#0.6.3
+date@2020-09-04
+name@金角大王
+change:
+1、react项目添加eslint

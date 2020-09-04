@@ -1,6 +1,6 @@
 {
   "name": "czty-script",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "author": "Jin",
   "license": "MIT",
   "bin": {
@@ -36,6 +36,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "postcss-loader": "^3.0.0",
     "postcss-scss": "^2.0.0",
+    "react-dev-utils": "^10.2.1",
     "recursive-readdir": "^2.2.2",
     "sass-loader": "^8.0.0",
     "sass-resources-loader": "^2.0.1",
