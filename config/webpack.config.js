@@ -14,6 +14,7 @@ const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const TerserPlugin = require('terser-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const {
   WARN_AFTER_BUNDLE_GZIP_SIZE,
@@ -88,21 +89,16 @@ function build(webpackEnv = 'development', extConfig) {
     }),
     new OptimizeCSSAssetsPlugin(),
     new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-cn/),
-    new CopyWebpackPlugin(generateCopyFile())
+    new CopyWebpackPlugin(generateCopyFile()),
+    new ESLintPlugin({
+      extensions: ['ts', 'tsx', 'js', 'jsx'],
+      emitError: true,
+      emitWarning: true
+    })
   ]
 
   if (type === 'Vue') {
     rules.push({
-      test: /\.(vue|js)?$/,
-      loader: 'eslint-loader',
-      enforce: 'pre',
-      include: paths.appSrc,
-      options: {
-        formatter: require('eslint-friendly-formatter'), // 指定错误报告的格式规范
-        quiet: true, // 只上报error，不上报warning
-      },
-    },
-    {
       test: /\.vue$/,
       loader: 'vue-loader',
     },
@@ -116,26 +112,15 @@ function build(webpackEnv = 'development', extConfig) {
 
   if (type === 'React') {
     rules.push({
-      test: /\.(js|jsx)?$/,
+      test: /\.(js|jsx|tsx|ts)?$/,
       include: paths.appSrc,
-      enforce: 'pre',
-      use: [{
-        loader: 'eslint-loader',
-        options: {
-          formatter: eslintFormatter
-        },
-      }],
-    },
-    {
-      test: /\.(js|jsx)?$/,
-      include: paths.appSrc,
-      loader: 'babel-loader',
+      loader: 'babel-loader'
     })
   }
 
   const config = {
     entry: {
-      index:'./src/index.js'
+      index:'./src/index.tsx'
     },
     externals: externals,
     devtool: isProduction ? false : 'cheap-source-map',
@@ -145,10 +130,10 @@ function build(webpackEnv = 'development', extConfig) {
       chunkFilename: path.posix.join(isServer? 'js/[name].bundle.js':'js/[name].bundle.[contenthash:8].js'),
       // eslint-disable-next-line no-undef
       path: path.resolve(__dirname, paths.output),
-      publicPath: isProduction ? serverPath : './',
+      publicPath: isProduction ? serverPath : './'
     },
     resolve: {
-      extensions: ['.js', '.vue', '.json', '.jsx'],
+      extensions: ['.js', '.vue', '.json', '.jsx', '.ts', '.tsx'],
       alias: {
         '@': resolve('src')
       }
@@ -266,7 +251,6 @@ function build(webpackEnv = 'development', extConfig) {
 
 const initConfig = {
   useAnalyse: false, // 是否开启打包体积分析
-  useAntd: false, // 是否开启antd打包优化
   useEslint: true, // 编译前检查代码格式
   publicPath: './',
 };

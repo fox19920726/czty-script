@@ -39,3 +39,13 @@ date@2020-09-04
 name@金角大王
 change:
 1、react项目添加eslint
+
+
+
+#0.6.4
+date@2021-01-26
+name@金角大王
+change:
+1、更新eslint版本
+2、把eslint-loader换成eslint-webpack-plugin
+3、新增对ts的支持
