@@ -49,3 +49,9 @@ change:
 1、更新eslint版本
 2、把eslint-loader换成eslint-webpack-plugin
 3、新增对ts的支持
+
+#0.6.5
+date@2021-01-29
+name@金角大王
+change:
+1、后缀名添加.d.ts格式的

@@ -133,7 +133,7 @@ function build(webpackEnv = 'development', extConfig) {
       publicPath: isProduction ? serverPath : './'
     },
     resolve: {
-      extensions: ['.js', '.vue', '.json', '.jsx', '.ts', '.tsx'],
+      extensions: ['.js', '.vue', '.json', '.jsx', '.ts', '.tsx', '.d.ts'],
       alias: {
         '@': resolve('src')
       }
