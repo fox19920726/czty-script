@@ -5,6 +5,7 @@ const sassGlobal = require(paths.appSrc+'/webpack.out.config').sassGlobal
 const externals = require(paths.appSrc+'/webpack.out.config').externals || {}
 const shouldCopyFile = require(paths.appSrc+'/webpack.out.config').shouldCopyFile || []
 const type = require(paths.appSrc+'/webpack.out.config').type || 'Vue'
+const isTs = require(paths.appSrc+'/webpack.out.config').ts
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // css 代码打包成文件注入html
@@ -120,7 +121,7 @@ function build(webpackEnv = 'development', extConfig) {
 
   const config = {
     entry: {
-      index:'./src/index.tsx'
+      index: isTs ? './src/index.tsx' : './src/index.js'
     },
     externals: externals,
     devtool: isProduction ? false : 'cheap-source-map',
@@ -153,6 +154,7 @@ function build(webpackEnv = 'development', extConfig) {
     plugins: plugins,
   };
   if (isServer) {
+    config.devtool = 'eval-cheap-source-map'
     config.module.rules.push(
       {
         test: /\.css$/,

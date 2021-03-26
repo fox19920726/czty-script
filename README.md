@@ -55,3 +55,10 @@ date@2021-01-29
 name@金角大王
 change:
 1、后缀名添加.d.ts格式的
+
+#0.6.6
+date@2021-03-26
+name@金角大王
+change:
+1、新增暴露是否是ts编写的入口
+2、devtool只在开发阶段打开（eval-cheap-source-map），其他情况都关闭（如果打开cheap-source-map,react代码压缩后显示空白页面）
