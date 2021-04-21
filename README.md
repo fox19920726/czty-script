@@ -76,3 +76,16 @@ date@2021-04-21
 name@金角大王
 change:
 1、devtool区分react/vue
+
+#0.6.9
+date@2021-04-21
+name@金角大王
+change:
+1、npm包版本问题
+
+
+#0.7.0
+date@2021-04-21
+name@金角大王
+change:
+1、webpack包版本^
