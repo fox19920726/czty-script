@@ -69,3 +69,10 @@ date@2021-04-21
 name@金角大王
 change:
 1、npm包版本固定
+
+
+#0.6.8
+date@2021-04-21
+name@金角大王
+change:
+1、devtool区分react/vue

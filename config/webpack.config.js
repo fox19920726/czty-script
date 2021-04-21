@@ -124,7 +124,6 @@ function build(webpackEnv = 'development', extConfig) {
       index: isTs ? './src/index.tsx' : './src/index.js'
     },
     externals: externals,
-    devtool: isProduction ? false : 'cheap-source-map',
     mode: isProduction ? 'production' : 'development',
     output: {
       filename: path.posix.join(isServer ? 'js/bundle.js' : 'js/bundle.[contenthash:8].js'),
@@ -154,7 +153,7 @@ function build(webpackEnv = 'development', extConfig) {
     plugins: plugins,
   };
   if (isServer) {
-    config.devtool = 'eval-cheap-source-map'
+    config.devtool = (type === 'Vue' ? 'cheap-source-map' : 'eval-cheap-source-map')
     config.module.rules.push(
       {
         test: /\.css$/,
