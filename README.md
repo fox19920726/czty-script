@@ -62,3 +62,10 @@ name@金角大王
 change:
 1、新增暴露是否是ts编写的入口
 2、devtool只在开发阶段打开（eval-cheap-source-map），其他情况都关闭（如果打开cheap-source-map,react代码压缩后显示空白页面）
+
+
+#0.6.7
+date@2021-04-21
+name@金角大王
+change:
+1、npm包版本固定
