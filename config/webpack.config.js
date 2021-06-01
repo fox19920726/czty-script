@@ -1,11 +1,10 @@
 const path = require('path');
 const webpack = require('webpack');
 const paths = require('./paths');
-const sassGlobal = require(paths.appSrc+'/webpack.out.config').sassGlobal
+const { sassGlobal, isTs, isMultiplePage } = require(paths.appSrc+'/webpack.out.config')
 const externals = require(paths.appSrc+'/webpack.out.config').externals || {}
 const shouldCopyFile = require(paths.appSrc+'/webpack.out.config').shouldCopyFile || []
 const type = require(paths.appSrc+'/webpack.out.config').type || 'Vue'
-const isTs = require(paths.appSrc+'/webpack.out.config').ts
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // css 代码打包成文件注入html
@@ -153,6 +152,9 @@ function build(webpackEnv = 'development', extConfig) {
     },
     plugins: plugins,
   };
+
+  config.entry = { ...config.entry, ...isMultiplePage }
+
   if (isServer) {
     config.devtool = (type === 'Vue' ? 'cheap-source-map' : 'eval-cheap-source-map')
     config.module.rules.push(

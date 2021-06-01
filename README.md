@@ -104,3 +104,10 @@ name@金角大王
 change:
 1、修改iconfont.css在过大之后产生独立文件后，导致字体文件引入的路径不对的问题，添加了个publicPath
 
+
+#0.7.3
+date@2021-06-01
+name@金角大王
+change:
+1、支持多页面配置
+
