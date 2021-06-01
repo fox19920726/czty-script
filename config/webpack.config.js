@@ -66,7 +66,8 @@ function build(webpackEnv = 'development', extConfig) {
       loader: 'url-loader',
       options: {
         limit: 30000,
-        name: path.posix.join(isServer ? 'font/[name].[ext]' :'font/[name].[hash:7].[ext]')
+        name: path.posix.join(isServer ? 'font/[name].[ext]' :'font/[name].[hash:7].[ext]'),
+        publicPath:'../'
       }
     }, {
       test: /\.(png|jpe?g|gif|svg|mp4|pdf)(\?.*)?$/,

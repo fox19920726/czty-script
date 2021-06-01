@@ -1,13 +1,10 @@
 {
   "name": "czty-script",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "author": "Jin",
   "license": "MIT",
   "bin": {
     "czty-build": "bin/czty-build.js"
-  },
-  "publishConfig": {
-    "registry": "http://192.168.150.186:11111/repository/npm-internal/"
   },
   "dependencies": {
     "@babel/core": "^7.6.2",
