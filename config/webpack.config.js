@@ -15,6 +15,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin')
 
 const {
   WARN_AFTER_BUNDLE_GZIP_SIZE,
@@ -95,6 +96,9 @@ function build(webpackEnv = 'development', extConfig) {
       extensions: ['ts', 'tsx', 'js', 'jsx'],
       emitError: true,
       emitWarning: true
+    }),
+    new CompressionPlugin({
+      test: /\.(js|css)(\?.*)?$/
     })
   ]
 

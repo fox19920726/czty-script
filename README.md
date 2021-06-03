@@ -111,3 +111,10 @@ name@金角大王
 change:
 1、支持多页面配置
 
+
+#0.7.4
+date@2021-06-03
+name@金角大王
+change:
+1、支持gzip（需要nginx开启gzip）
+
