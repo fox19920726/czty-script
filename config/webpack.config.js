@@ -191,6 +191,7 @@ function build(webpackEnv = 'development', extConfig) {
     // 当开启了hot：true，会自动添加hotReplaceModule
     config.plugins.push(new webpack.NamedModulesPlugin());
   } else {
+    config.devtool = 'none'
     config.module.rules.push(
       {
         test: /\.css$/,
