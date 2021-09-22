@@ -124,3 +124,9 @@ date@2021-09-22
 name@金角大王
 change:
 1、仅开发模式（local）开启sourceMap，其他都关闭
+
+#0.7.6
+date@2021-09-22
+name@金角大王
+change:
+1、仅开发模式（local）设置mode为development

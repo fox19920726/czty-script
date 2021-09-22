@@ -128,7 +128,7 @@ function build(webpackEnv = 'development', extConfig) {
       index: isTs ? './src/index.tsx' : './src/index.js'
     },
     externals: externals,
-    mode: isProduction ? 'production' : 'development',
+    mode: isServer ? 'development' : 'production',
     output: {
       filename: path.posix.join(isServer ? 'js/bundle.js' : 'js/bundle.[contenthash:8].js'),
       chunkFilename: path.posix.join(isServer? 'js/[name].bundle.js':'js/[name].bundle.[contenthash:8].js'),
